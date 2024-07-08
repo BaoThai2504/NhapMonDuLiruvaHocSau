@@ -1,0 +1,53 @@
+
+
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+# Vấn đề 1
+def load_csv(filename):
+  return pd.read_csv(filename)
+  filename = "E:\hk3\Nhập môn phân tích dữ liệu và học sâu\lab4-ThaiQuocBao-207ct09955\titanic_disaster.csv"
+  tidisaster = load_csv(filename)
+  print(tidisaster.head(10))
+
+# Vấn đề 2
+sns.set(style="darkgrid")
+sns.heatmap(tidisaster.isna(), cmap = 'viridis')
+dfage = tidisaster[tidisaster['Age'].isna()]
+print(dfage.count())
+dfcabin = tidisaster[tidisaster['Cabin'].isna()]
+print(dfcabin.count())
+dfembarked = tidisaster[tidisaster['Embarked'].isna()]
+print(dfembarked.count())
+
+# Vấn đề 3
+def split_name_series(string):
+  firstName, secondName=string.split(',')
+  return pd.Series((firstName, secondName), index=['firstName', 'secondName'])
+def split_name(x_df):
+  res = x_df['Name'].apply(split_name_series)
+  x_df[res_columns]=res
+  return x_df
+tidisaster_splitname = load_data(filename).pipe(split_name)
+tidisaster_splitname.head(5)
+
+# vấn đề 4
+def substitute_Sex(x_df):
+  mapping = {'male':'M', 'female':'F'}
+  x_df['Sex']= x_df['Sex'].map(mapping)
+  return x_df
+tidisaster = load_data(filename).pipe(split_name)
+# vấn đề 5
+sns.boxplot(y='Age', x='Pclass', data=tidisaster)
+
+# vấn đề 7
+listNameprefix = []
+for index, row in tidisaster.iterrows():
+  vitri = row['secondName'].strip().find(' ')
+  secondName = row['secondName'].strip()
+  nameprefix = secondName[vitri + 1:]
+  listNameprefix.append(nameprefix)
+cotNameprefix = pd.DataFrame(listNameprefix, columns=['nameprefix'])
+tidisaster = pd.concat([tidisaster, cotNameprefix], axis=1, sort = False)
+print(tidisaster)
